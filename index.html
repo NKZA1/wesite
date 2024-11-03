@@ -1,98 +1,63 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bảo vệ Trang Web</title>
+    <title>Verify HMAC Key</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f4;
+            margin: 50px;
         }
         .container {
             max-width: 400px;
-            width: 100%;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: auto;
             text-align: center;
         }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        .form-group input {
+        input, button {
+            margin: 10px 0;
+            padding: 10px;
             width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .form-group button {
-            padding: 10px 15px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .form-group button:hover {
-            background-color: #0056b3;
         }
         .message {
             margin-top: 20px;
-            color: red;
-        }
-        .hidden {
-            display: none;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Nhập Mật Khẩu</h1>
-        <div class="form-group">
-            <label for="password">Mật khẩu:</label>
-            <input type="password" id="password" placeholder="Nhập mật khẩu ở đây">
-        </div>
-        <div class="form-group">
-            <button onclick="checkPassword()">Xác Thực</button>
-        </div>
-        <div class="message hidden" id="message">
-            Mật khẩu không đúng!
-        </div>
-        <div class="content hidden" id="content">
-            <!-- Nội dung được bảo vệ sẽ hiển thị ở đây -->
-            <h2>Chào mừng đến với nội dung bảo vệ!</h2>
-        </div>
+        <h1>HMAC Key Verification</h1>
+        <input type="text" id="userKey" placeholder="Enter your HMAC key" />
+        <button onclick="verifyKey()">Verify Key</button>
+        <div class="message" id="message"></div>
     </div>
 
     <script>
-        const correctPassword = 'yourpassword'; // Thay đổi mật khẩu theo ý muốn
-
-        function checkPassword() {
-            const passwordInput = document.getElementById('password').value;
-            const message = document.getElementById('message');
-            const content = document.getElementById('content');
-
-            if (passwordInput === correctPassword) {
-                message.classList.add('hidden');
-                content.classList.remove('hidden');
-            } else {
-                message.classList.remove('hidden');
-                content.classList.add('hidden');
-            }
+        function verifyKey() {
+            const userKey = document.getElementById('userKey').value;
+            fetch('http://localhost:5001/public_api', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ user_key: userKey })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messageElement = document.getElementById('message');
+                if (data.status === 'success') {
+                    messageElement.textContent = 'Verification successful!';
+                    messageElement.style.color = 'green';
+                } else {
+                    messageElement.textContent = 'Verification failed!';
+                    messageElement.style.color = 'red';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('message').textContent = 'An error occurred.';
+                document.getElementById('message').style.color = 'red';
+            });
         }
     </script>
 </body>
