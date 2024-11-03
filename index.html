@@ -1,64 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verify HMAC Key</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 50px;
-        }
-        .container {
-            max-width: 400px;
-            margin: auto;
-            text-align: center;
-        }
-        input, button {
-            margin: 10px 0;
-            padding: 10px;
-            width: 100%;
-        }
-        .message {
-            margin-top: 20px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>HMAC Key Verification</h1>
-        <input type="text" id="userKey" placeholder="Enter your HMAC key" />
-        <button onclick="verifyKey()">Verify Key</button>
-        <div class="message" id="message"></div>
-    </div>
+from flask import Flask, request, jsonify
 
-    <script>
-        function verifyKey() {
-            const userKey = document.getElementById('userKey').value;
-            fetch('http://localhost:5001/public_api', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ user_key: userKey })
-            })
-            .then(response => response.json())
-            .then(data => {
-                const messageElement = document.getElementById('message');
-                if (data.status === 'success') {
-                    messageElement.textContent = 'Verification successful!';
-                    messageElement.style.color = 'green';
-                } else {
-                    messageElement.textContent = 'Verification failed!';
-                    messageElement.style.color = 'red';
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('message').textContent = 'An error occurred.';
-                document.getElementById('message').style.color = 'red';
-            });
-        }
-    </script>
-</body>
-</html>
+app = Flask(__name__)
+
+@app.route('/api/data', methods=['POST'])
+def receive_data():
+    data = request.json
+    return jsonify({"message": "Data received", "data": data}), 200
+
+if __name__ == '__main__':
+    app.run(debug=True)
