@@ -1,23 +1,17 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test POST và GET</title>
+    <title>Generate API Key</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Gửi và Lấy Dữ Liệu</h1>
-    <form action="/submit" method="post">
-        <label for="item">Nhập dữ liệu:</label>
-        <input type="text" id="item" name="item" required>
-        <button type="submit">Gửi</button>
-    </form>
-    
-    <h2>Dữ liệu đã gửi:</h2>
-    <ul>
-        {% for item in data %}
-            <li>{{ item }}</li>
-        {% endfor %}
-    </ul>
+    <div class="container">
+        <h1>API Key Generator</h1>
+        <button id="generateButton">Generate API Key</button>
+        <p id="apiKeyDisplay"></p>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
